@@ -99,6 +99,9 @@ const PhotoManipulator: PhotoManipulatorStatic = {
     ),
   optimize: (image: ImageSource, quality: number) =>
     RNPhotoManipulator.optimize(ParamUtils.toImageNative(image), quality),
+
+  mergeImages: (topImage: ImageSource, bottomImage: ImageSource, mimeType: MimeType = MimeType.JPEG) =>
+    RNPhotoManipulator.mergeImages(ParamUtils.toImageNative(topImage), ParamUtils.toImageNative(bottomImage), mimeType),
 };
 
 export default PhotoManipulator;

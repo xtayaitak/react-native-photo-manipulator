@@ -107,4 +107,6 @@ export interface PhotoManipulatorStatic {
    * @param mimeType (optional) Mimetype of output image (image/jpeg, image/png)
    */
   optimize: (image: ImageSource, quality: number) => Promise<string>;
+
+  mergeImages: (topImage: ImageSource, bottomImage: ImageSource, mimeType?: MimeType) => Promise<string>;
 }

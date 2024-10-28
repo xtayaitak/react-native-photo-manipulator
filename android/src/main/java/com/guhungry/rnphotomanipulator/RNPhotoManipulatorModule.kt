@@ -244,6 +244,39 @@ class RNPhotoManipulatorModule(private val context: ReactApplicationContext) : R
         }
     }
 
+    @ReactMethod
+    override fun mergeImages(topImageUri: String, bottomImageUri: String, mimeType: String?, promise: Promise) {
+        try {
+            // Load both images
+            val topImage = bitmapFromUri(context, topImageUri, mutableOptions())
+            val bottomImage = bitmapFromUri(context, bottomImageUri, mutableOptions())
+            
+            // Create a new bitmap with height = sum of both images
+            val mergedBitmap = Bitmap.createBitmap(
+                maxOf(topImage.width, bottomImage.width),
+                topImage.height + bottomImage.height,
+                Bitmap.Config.ARGB_8888
+            )
+            
+            // Draw both images
+            val canvas = android.graphics.Canvas(mergedBitmap)
+            canvas.drawBitmap(bottomImage, 0f, 0f, null)
+            canvas.drawBitmap(topImage, 0f, bottomImage.height.toFloat(), null)
+            
+            // Clean up
+            topImage.recycle()
+            bottomImage.recycle()
+            
+            // Save result
+            val file = saveTempFile(context, mergedBitmap, mimeType!!, FILE_PREFIX, DEFAULT_QUALITY)
+            mergedBitmap.recycle()
+            
+            promise.resolve(file)
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
+    }
+
     companion object {
         const val NAME: String = "RNPhotoManipulator"
         private const val FILE_PREFIX = "RNPM_"

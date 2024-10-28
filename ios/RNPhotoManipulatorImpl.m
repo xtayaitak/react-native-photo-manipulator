@@ -245,4 +245,36 @@ static NSTextAlignment toTextAlign(BOOL isRTL, NSString* align) {
     callback(nil, result);
 }
 
++ (void)mergeImages:(NSString *)topImageUri
+        bottomImageUri:(NSString *)bottomImageUri
+        mimeType:(NSString *)mimeType
+        resolve:(RCTPromiseResolveBlock)resolve
+        reject:(RCTPromiseRejectBlock)reject
+        bridge:(RCTBridge *)bridge {
+    
+    UIImage *topImage = [self loadImageFromUri:topImageUri bridge:bridge];
+    UIImage *bottomImage = [self loadImageFromUri:bottomImageUri bridge:bridge];
+    
+    if (!topImage || !bottomImage) {
+        reject(@"error", @"Failed to load images", nil);
+        return;
+    }
+    
+    CGFloat width = MAX(topImage.size.width, bottomImage.size.width);
+    CGFloat height = topImage.size.height + bottomImage.size.height;
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, 0.0);
+    
+    // Draw bottom image
+    [bottomImage drawAtPoint:CGPointMake(0, 0)];
+    // Draw top image
+    [topImage drawAtPoint:CGPointMake(0, bottomImage.size.height)];
+    
+    UIImage *mergedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    NSString *filePath = [self saveImageAsTempFile:mergedImage type:mimeType quality:1.0];
+    resolve(filePath);
+}
+
 @end

@@ -57,6 +57,14 @@ NS_ASSUME_NONNULL_BEGIN
         resolve:(RCTPromiseResolveBlock)resolve
         reject:(RCTPromiseRejectBlock)reject
         bridge:(RCTBridge *)bridge;
+
++ (void)mergeImages:(NSString *)topImageUri
+        bottomImageUri:(NSString *)bottomImageUri
+        mimeType:(NSString *)mimeType
+        resolve:(RCTPromiseResolveBlock)resolve
+        reject:(RCTPromiseRejectBlock)reject
+        bridge:(RCTBridge *)bridge;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -98,6 +98,11 @@ export interface Spec extends TurboModule {
    * @param mimeType (optional) Mimetype of output image (image/jpeg, image/png)
    */
   optimize: (image: string, quality: number) => Promise<string>;
+
+  /**
+   * Merge two images
+   */
+  mergeImages: (topImageUri: string, bottomImageUri: string, mimeType?: string) => Promise<string>;
 }
 
 export default TurboModuleRegistry.get<Spec>('RNPhotoManipulator');
