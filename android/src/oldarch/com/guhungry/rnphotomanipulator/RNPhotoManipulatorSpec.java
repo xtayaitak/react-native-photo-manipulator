@@ -21,4 +21,5 @@ public abstract class RNPhotoManipulatorSpec extends ReactContextBaseJavaModule 
     public abstract void overlayImage(String uri, String icon, ReadableMap position, @Nullable String mimeType, Promise promise);
     public abstract void printText(String uri, ReadableArray list, @Nullable String mimeType, Promise promise);
     public abstract void optimize(String uri, double quality, Promise promise);
+    public abstract void mergeImages(String topImageUri, String bottomImageUri, @Nullable String mimeType, Promise promise);
 }
