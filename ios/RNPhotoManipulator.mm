@@ -89,6 +89,15 @@ RCT_EXPORT_METHOD(optimize:(NSString *)uri
     [RNPhotoManipulatorImpl optimize:uri quality:quality resolve:resolve reject:reject bridge:self.bridge];
 }
 
+RCT_EXPORT_METHOD(mergeImages:(NSString *)topImageUri
+                  bottomImageUri:(NSString *)bottomImageUri
+                  mimeType:(NSString *)mimeType
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    [RNPhotoManipulatorImpl mergeImages:topImageUri bottomImageUri:bottomImageUri mimeType:mimeType resolve:resolve reject:reject bridge:self.bridge];
+}
+
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
    (const facebook::react::ObjCTurboModule::InitParams &)params
