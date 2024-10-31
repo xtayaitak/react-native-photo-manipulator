@@ -252,29 +252,37 @@ static NSTextAlignment toTextAlign(BOOL isRTL, NSString* align) {
         reject:(RCTPromiseRejectBlock)reject
         bridge:(RCTBridge *)bridge {
     
-    UIImage *topImage = [self loadImageFromUri:topImageUri bridge:bridge];
-    UIImage *bottomImage = [self loadImageFromUri:bottomImageUri bridge:bridge];
-    
-    if (!topImage || !bottomImage) {
-        reject(@"error", @"Failed to load images", nil);
-        return;
-    }
-    
-    CGFloat width = MAX(topImage.size.width, bottomImage.size.width);
-    CGFloat height = topImage.size.height + bottomImage.size.height;
-    
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, 0.0);
-    
-    // Draw bottom image
-    [bottomImage drawAtPoint:CGPointMake(0, 0)];
-    // Draw top image
-    [topImage drawAtPoint:CGPointMake(0, bottomImage.size.height)];
-    
-    UIImage *mergedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    NSString *filePath = [self saveImageAsTempFile:mergedImage type:mimeType quality:1.0];
-    resolve(filePath);
+    // 加载第一张图片
+    [self loadImage:bridge uri:topImageUri callback:^(NSError *error1, UIImage *topImage) {
+        if (error1) {
+            reject(@(error1.code).stringValue, error1.description, error1);
+            return;
+        }
+        
+        // 加载第二张图片
+        [self loadImage:bridge uri:bottomImageUri callback:^(NSError *error2, UIImage *bottomImage) {
+            if (error2) {
+                reject(@(error2.code).stringValue, error2.description, error2);
+                return;
+            }
+            
+            CGFloat width = MAX(topImage.size.width, bottomImage.size.width);
+            CGFloat height = topImage.size.height + bottomImage.size.height;
+            
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, 0.0);
+            
+            // 绘制底部图片
+            [bottomImage drawAtPoint:CGPointMake(0, 0)];
+            // 绘制顶部图片
+            [topImage drawAtPoint:CGPointMake(0, bottomImage.size.height)];
+            
+            UIImage *mergedImage = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            
+            NSString *uri = [ImageUtils saveTempFile:mergedImage mimeType:mimeType quality:DEFAULT_QUALITY];
+            resolve(uri);
+        }];
+    }];
 }
 
 @end
