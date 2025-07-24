@@ -268,8 +268,17 @@ static NSTextAlignment toTextAlign(BOOL isRTL, NSString* align) {
             
             CGFloat width = MAX(topImage.size.width, bottomImage.size.width);
             CGFloat height = topImage.size.height + bottomImage.size.height;
+
+            // 添加调试日志
+            NSLog(@"=== iOS 图片合并调试信息 ===");
+            NSLog(@"顶部图片尺寸: %.0f x %.0f, scale: %.1f", topImage.size.width, topImage.size.height, topImage.scale);
+            NSLog(@"底部图片尺寸: %.0f x %.0f, scale: %.1f", bottomImage.size.width, bottomImage.size.height, bottomImage.scale);
+            NSLog(@"计算的合并尺寸: %.0f x %.0f", width, height);
+            NSLog(@"设备屏幕缩放比例: %.1f", [UIScreen mainScreen].scale);
+
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, 1.0);
             
-            UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, 0.0);
+
             
             // 绘制底部图片
             [bottomImage drawAtPoint:CGPointMake(0, 0)];
@@ -278,6 +287,10 @@ static NSTextAlignment toTextAlign(BOOL isRTL, NSString* align) {
             
             UIImage *mergedImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
+
+            // 添加合并后的调试日志
+            NSLog(@"合并后图片尺寸: %.0f x %.0f, scale: %.1f", mergedImage.size.width, mergedImage.size.height, mergedImage.scale);
+            NSLog(@"=== iOS 图片合并完成 ===");
             
             NSString *uri = [ImageUtils saveTempFile:mergedImage mimeType:mimeType quality:DEFAULT_QUALITY];
             resolve(uri);
