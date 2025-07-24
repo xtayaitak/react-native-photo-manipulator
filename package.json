@@ -1,6 +1,6 @@
 {
   "name": "@xtayaitak/react-native-photo-manipulator",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "React Native Image Processing API to edit photo programmatically for Android and iOS.",
   "source": "./src/index.ts",
   "main": "./lib/commonjs/index.js",
